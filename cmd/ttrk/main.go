@@ -4,16 +4,22 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/MBH999/ttrk/internal/homeScreen"
+	"github.com/MBH999/ttrk/internal/tui"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 func main() {
-	p := tea.NewProgram(homescreen.InitialModel())
+	m, err := tui.NewModel()
+	if err != nil {
+		fmt.Println("fatal:", err)
+		os.Exit(1)
+	}
 
-	DEBUG := true
+	p := tea.NewProgram(m)
 
-	if DEBUG {
+	const debugLogging = true
+
+	if debugLogging {
 		f, err := tea.LogToFile("debug.log", "debug")
 		if err != nil {
 			fmt.Println("fatal:", err)
@@ -23,8 +29,7 @@ func main() {
 	}
 
 	if _, err := p.Run(); err != nil {
-		fmt.Printf("Error! %v", err)
+		fmt.Printf("Error: %v\n", err)
 		os.Exit(1)
 	}
 }
-

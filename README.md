@@ -52,6 +52,12 @@ The binary will be available in the `bin/` directory.
 ./bin/ttrk version
 ```
 
+## Configuration
+
+Create `~/.config/ttrk/config.ini` to customise runtime behaviour. The file uses a simple `key=value` format.
+
+- `data_dir` — directory where tracker data is stored. Defaults to `~/.config/ttrk`.
+
 ## Development
 
 ### Prerequisites
