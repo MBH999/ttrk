@@ -1,35 +1,26 @@
 # ttrk
 
-A command-line interface tool built with Go.
+`ttrk` is a keyboard-first time tracker that runs entirely in your terminal. It provides a Bubble Tea powered TUI for organising projects, capturing tasks, and logging focused work sessions without leaving the command line.
 
-## Project Structure
+## Features
 
-```
-ttrk/
-├── cmd/
-│   └── ttrk/           # Main application entry point
-│       └── main.go
-├── internal/           # Private application code
-│   ├── cli/           # CLI commands and logic
-│   │   ├── root.go
-│   │   └── version.go
-│   └── config/        # Configuration management
-│       └── config.go
-├── pkg/               # Public library code
-│   └── version/       # Version information
-│       ├── version.go
-│       └── version_test.go
-├── scripts/           # Build and development scripts
-│   └── build.sh
-├── docs/              # Documentation
-├── Makefile          # Build automation
-├── go.mod            # Go module definition
-└── README.md         # This file
-```
+- Create projects and attach as many tasks as you need.
+- Start and stop timers to log work; every session is stored automatically.
+- Review per-task and per-project totals without leaving the keyboard.
+- Data is kept in a simple JSON file under your config directory, making backups straightforward.
+- Ships with Makefile helpers for building, linting, testing, and releasing.
 
 ## Installation
 
-### From Source
+### Using `go install`
+
+```bash
+go install github.com/MBH999/ttrk/cmd/ttrk@latest
+```
+
+The binary will be placed in `$GOBIN` (or `$GOPATH/bin` if `GOBIN` is unset).
+
+### From source
 
 ```bash
 git clone https://github.com/MBH999/ttrk.git
@@ -37,84 +28,55 @@ cd ttrk
 make build
 ```
 
-The binary will be available in the `bin/` directory.
+The compiled binary is written to `bin/ttrk`.
 
-## Usage
+## Quick start
 
-```bash
-# Run the application
-./bin/ttrk
+1. Run `./bin/ttrk` (or `go run ./cmd/ttrk`) to launch the interface.
+2. Use the arrow keys or `j/k` to move around the menus.
+3. Pick **New Project** to add a project, then choose it and add tasks.
+4. Press `enter` on a task to start tracking time and `space` or `enter` again to log the session.
 
-# Show help
-./bin/ttrk --help
+A `debug.log` file is created alongside the binary with Bubble Tea's debug output. This can be helpful when reporting issues.
 
-# Show version
-./bin/ttrk version
-```
+## Keyboard reference
 
-## Configuration
+| Screen | Keys | Action |
+| --- | --- | --- |
+| Any | `ctrl+c` | Quit immediately |
+| Home | `↑/↓` or `j/k` | Move the selection |
+| Home | `enter` | Activate the highlighted option |
+| Project list | `enter` | Open the highlighted project |
+| Project list | `a` or `n` | Create a project |
+| Project/Task lists | `esc` or `backspace` | Return to the previous screen |
+| Task list | `enter` | Start the timer for the selected task |
+| Task list | `a` or `n` | Add a task to the active project |
+| Timer | `space` or `enter` | Stop and log the running session |
+| Timer | `esc` | Cancel the running session without logging |
 
-Create `~/.config/ttrk/config.ini` to customise runtime behaviour. The file uses a simple `key=value` format.
+## Data and configuration
 
-- `data_dir` — directory where tracker data is stored. Defaults to `~/.config/ttrk`.
+`ttrk` looks for its configuration in `~/.config/ttrk`. The directory is created automatically on first run.
+
+- `config.ini` (optional): customise settings, currently only `data_dir` is supported. Example:
+  ```ini
+  # ~/.config/ttrk/config.ini
+  data_dir = ~/Dropbox/ttrk-data
+  ```
+- `data.json`: generated automatically and stores all projects, tasks, and timer entries.
+
+If you set `data_dir`, `ttrk` will keep `data.json` inside that directory.
 
 ## Development
 
-### Prerequisites
+- Go 1.22 or newer
+- `make build` – build the binary
+- `make test` – run the test suite
+- `make lint` – run `golangci-lint` (must be installed locally)
+- `make run` – rebuild and start the TUI
 
-- Go 1.19 or later
-- Make (optional, for using Makefile commands)
+Before opening a pull request, run `make all` to execute the common checks.
 
-### Building
+---
 
-```bash
-# Using Makefile
-make build
-
-# Or using Go directly
-go build -o bin/ttrk ./cmd/ttrk
-
-# Or using the build script
-./scripts/build.sh
-```
-
-### Testing
-
-```bash
-# Run all tests
-make test
-
-# Or using Go directly
-go test ./...
-```
-
-### Other Development Commands
-
-```bash
-# Format code
-make fmt
-
-# Run linter (requires golangci-lint)
-make lint
-
-# Run go vet
-make vet
-
-# Clean build artifacts
-make clean
-
-# Show all available make targets
-make help
-```
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+Happy tracking!
